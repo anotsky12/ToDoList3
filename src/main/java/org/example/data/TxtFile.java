@@ -207,7 +207,7 @@ public class TxtFile {
         File[] collection = Directory.folder.listFiles();
         List<File> fileList = Arrays.asList(collection);
         for (File f:
-             fileList) {
+             fileList )   {
 
             Task task = new Task(f.getName());
 
