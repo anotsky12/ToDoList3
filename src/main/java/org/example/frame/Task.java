@@ -12,40 +12,31 @@ import java.io.IOException;
 
 public class Task extends JPanel {
 
-    private boolean checked;
+    private  boolean checked;
 
-    private static JButton showDescription;
+    private  JButton showDescription;
     private JLabel  textOfTask;
-    private static JToggleButton doneButton;
+    private  JToggleButton doneButton;
     private JPanel panelOfButtonsS_D;
     private JLabel index;
-
-    TxtFile txtFile= new TxtFile();
 
 
 
 
 
     public Task(String nameOfTask) throws IOException {
+
+        TxtFile txtFile = new TxtFile();
         txtFile.createTxtFolder(nameOfTask);
-
-
-
-
-
 
         this.setPreferredSize(new Dimension(40,20));
         this.setBackground(Color.RED);
-
         this.setLayout(new BorderLayout());
-        //setChecked(false);
 
         index = new JLabel("");
         index.setPreferredSize(new Dimension(20, 20));
         index.setHorizontalAlignment(JLabel.CENTER);
         this.add(index, BorderLayout.WEST);
-
-
 
         textOfTask = new JLabel(nameOfTask);
         textOfTask.setBorder(BorderFactory.createEmptyBorder());
@@ -60,13 +51,16 @@ public class Task extends JPanel {
         doneButton = new JToggleButton("Done", false);
         doneButton.setPreferredSize(new Dimension(40, 40));
         doneButton.setBorder(BorderFactory.createEmptyBorder());
-        panelOfButtonsS_D.add(doneButton, BorderLayout.WEST);
 
 
         showDescription = new JButton("show");
         showDescription.setPreferredSize(new Dimension(40,40));
         showDescription.setBorder(BorderFactory.createEmptyBorder());
+
+        panelOfButtonsS_D.add(doneButton, BorderLayout.WEST);
+
         panelOfButtonsS_D.add(showDescription, BorderLayout.EAST);
+
 
         this.add(panelOfButtonsS_D, BorderLayout.EAST);
 
@@ -91,9 +85,7 @@ public class Task extends JPanel {
 
 
     }
-    public boolean isChecked() {
-        return checked;
-    }
+
 
     public void setChecked(boolean checked) {
         this.checked = checked;
@@ -107,6 +99,13 @@ public class Task extends JPanel {
     }
     public boolean getState() {
         return this.checked;
+    }
+
+    public String getDescription(String nameOfTask) throws IOException {
+        String temp;
+        temp = TxtFile.getDescription(nameOfTask).toString();
+        System.out.println(nameOfTask);
+        return temp;
     }
 
 

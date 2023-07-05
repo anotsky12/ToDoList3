@@ -67,6 +67,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
+import org.example.frame.Task;
 
 
 public class TxtFile {
@@ -76,12 +77,10 @@ public class TxtFile {
 
 
     private static File description;
-    private static String descriptionString;
-    private static File status, status2;
+    private  File status;
+    private static File status2;
 
 
-    private String taskDescription;
-    static JPanel jPanel = new JPanel();
 
 
     public void createTxtFolder(String nameOfTask) {
@@ -95,7 +94,7 @@ public class TxtFile {
         } catch (IOException e) {
             System.out.println("status of " + nameOfTask + " not created");
         }
-        setStatus(false);
+        setStatus(false, nameOfTxtFile);
         description = new File(txtFile.getAbsoluteFile() + "\\" + "description" + ".txt");
         try {
             description.createNewFile();
@@ -104,15 +103,15 @@ public class TxtFile {
             System.out.println("description of " + nameOfTask + "not created");
         }
 
-        setDescriptionAfterCreated();
+        setDescriptionAfterCreated(getNameOfTxtFile());
 
 
     }
 
-    public static void setStatus(boolean b) {
+    public static void setStatus(boolean b, String nameOfTxtFile) {
         PrintWriter pw = null;
         try {
-            pw = new PrintWriter(TxtFile.status.getAbsolutePath());
+            pw = new PrintWriter(Directory.folder.getAbsoluteFile() + "\\" + nameOfTxtFile + "\\" + "status" + ".txt");
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -121,11 +120,12 @@ public class TxtFile {
 
     }
 
-    public void setDescriptionAfterCreated() {
-        taskDescription = JOptionPane.showInputDialog(jPanel, "Description");
+    public static void setDescriptionAfterCreated(String nameOfTxtFile) {
+        JPanel jPanel = new JPanel();
+        String taskDescription = JOptionPane.showInputDialog(jPanel, "Description");
         try {
             PrintWriter pw = new PrintWriter(
-                    description.getAbsolutePath());
+                    Directory.folder.getAbsoluteFile() + "\\" + nameOfTxtFile + "\\" + "description" + ".txt");
             pw.println(taskDescription);
             pw.close();
             System.out.println("Task : " + txtFile.getName()
@@ -133,17 +133,21 @@ public class TxtFile {
                     + taskDescription
                     + " successfully added!");
 
-            setDescriptionString(taskDescription, txtFile);
+
+
 
 
         } catch (FileNotFoundException ex) {
             throw new RuntimeException(ex);
         }
-        setStatus(false);
+
+        setStatus(false, nameOfTxtFile);
     }
 
     public static void changeStatus(boolean b, String nameOfTask) throws IOException {
         //status.delete();
+        String boolTemp = String.valueOf(b) ;
+
         Files.delete(Path.of((Directory.folder.getAbsolutePath() + "\\" + nameOfTask + "\\" + "status" + ".txt")));
         status2 = new File(Directory.folder.getAbsoluteFile() + "\\" + nameOfTask + "\\" + "status" + ".txt");
         PrintWriter pw = null;
@@ -152,15 +156,15 @@ public class TxtFile {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        pw.println(b);
+        pw.println(boolTemp);
         pw.close();
 
     }
 
-//    public static Boolean getStatus() {
-//        boolean k = false;
-//        return k;
-//    }
+    public static Boolean getStatus() {
+        boolean k = false;
+        return k;
+    }
 
     public static void deleteTrue() {
         File[] collection = Directory.folder.listFiles();
@@ -199,6 +203,16 @@ public class TxtFile {
 
 
     }
+    public static void readAtStart() throws IOException {
+        File[] collection = Directory.folder.listFiles();
+        List<File> fileList = Arrays.asList(collection);
+        for (File f:
+             fileList) {
+
+            Task task = new Task(f.getName());
+
+        }
+    }
 
     public static List<String> getListOfName(Path path) {
         try (Stream<Path> walk = Files.walk(path)) {
@@ -221,11 +235,13 @@ public class TxtFile {
         this.nameOfTxtFile = nameOfTxtFile;
     }
 
-    public static void setDescriptionString(String descriptionString, File txtFile) {
-        TxtFile.descriptionString = descriptionString;
-    }
 
-    public static String getDescriptionString() {
-        return descriptionString;
+    public static String getDescription(String nameOfTask) throws IOException {
+
+        String fileName = Directory.folder.getAbsoluteFile() + "\\" + nameOfTask + "\\" + "description" + ".txt";
+        String content = Files.lines(Paths.get(fileName)).reduce("", String::concat);
+        return content;
+
+
     }
 }

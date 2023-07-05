@@ -23,17 +23,18 @@ public class Frame extends JFrame {
     private final TitleBar titleBar;
     private final List list;
 
-    static JPanel jPanel = new JPanel();
-    static Task task;
+    private JPanel jPanel = new JPanel();
 
 
-    static JTextPane jTextPane = new JTextPane();
+
+    private JTextPane jTextPane = new JTextPane();
 
 
-    private String nameOfTask;
+
 
 
     public Frame() {
+
 
         this.setSize(Constant.FRAME_SIZE_WIDTH, Constant.FRAME_SIZE_HEIGHT);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -52,6 +53,8 @@ public class Frame extends JFrame {
         clear = buttonPanel.getClearDoneTask();
 
         addListener();
+        repaint();
+        revalidate();
 
 
         show();
@@ -64,64 +67,72 @@ public class Frame extends JFrame {
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
-                nameOfTask = JOptionPane.showInputDialog(jPanel, "Task");
+               String nameOfTask = JOptionPane.showInputDialog(jPanel, "Task");
+                Task task;
                 try {
-                    task = new Task(nameOfTask);
+                     task = new Task(nameOfTask);
+
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
 
                 list.add(task);
                 list.updateNumbers();
+                repaint();
+                revalidate();
 
 
                 task.getDoneButton().addMouseListener(new MouseAdapter() {
                     @Override
-                    public void mousePressed(MouseEvent e) {
-                        super.mousePressed(e);
-
-
-                        String textTemp = (task.getDoneButton().isSelected()) ? "Undo" : "Done";
+                    public void mouseClicked(MouseEvent e) {
+                        super.mouseClicked(e);
+                        String textTemp = (task.getDoneButton().isSelected()) ?  "Undo" :"Done" ;
                         task.getDoneButton().setText(textTemp);
                         if (task.getDoneButton().isSelected()) {
                             try {
                                 task.changeStatusTrue(nameOfTask, true);
+                                repaint();
                                 revalidate();
                             } catch (IOException ex) {
                                 throw new RuntimeException(ex);
                             }
-                            revalidate();
                         }
                         if (!task.getDoneButton().isSelected()) {
                             try {
                                 task.changeStatusFalse(nameOfTask, false);
+                                repaint();
                                 revalidate();
                             } catch (IOException ex) {
                                 throw new RuntimeException(ex);
                             }
-                            revalidate();
                         }
-
-                        revalidate();
 
                     }
                 });
 
-
+                repaint();
                 revalidate();
 
                 task.getShowDescription().addMouseListener(new MouseAdapter() {
                     @Override
                     public void mousePressed(MouseEvent e) {
                         super.mousePressed(e);
-                        JOptionPane.showMessageDialog(jTextPane, TxtFile.getDescriptionString(), nameOfTask, 1);
+                        try {
+                            JOptionPane.showMessageDialog(jTextPane, task.getDescription(nameOfTask), nameOfTask, 1);
+                            revalidate();
+                            repaint();
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     }
                 });
-                revalidate();
+
 
 
             }
         });
+
+
         clear.addMouseListener(new MouseAdapter() {
 
 
@@ -131,6 +142,7 @@ public class Frame extends JFrame {
                 list.removeComplitedTask();
                 list.updateNumbers();
                 TxtFile.deleteTrue();
+                repaint();
                 revalidate();
 
 
@@ -212,6 +224,7 @@ public class Frame extends JFrame {
 
             }
         });
+        repaint();
         revalidate();
     }
 

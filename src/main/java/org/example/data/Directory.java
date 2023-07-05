@@ -1,6 +1,7 @@
 package org.example.data;
 
 import java.io.File;
+import java.io.IOException;
 
 
 public class Directory {
@@ -21,7 +22,7 @@ public class Directory {
 //        return super.toString();
 //    }
 
-    public void mkDirectory(){
+    public void mkDirectory() throws IOException {
 
 
 
@@ -33,6 +34,7 @@ public class Directory {
             } else {
                 setURI(folder.getAbsolutePath());
                 System.out.println("The folder has already been created: " + getURI());
+               // TxtFile.readAtStart();
             }
 
 
