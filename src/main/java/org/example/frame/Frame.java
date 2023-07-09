@@ -1,6 +1,7 @@
 package org.example.frame;
 
 
+import org.example.data.Directory;
 import org.example.data.TxtFile;
 
 
@@ -11,9 +12,11 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import java.io.File;
 import java.io.IOException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class Frame extends JFrame {
@@ -21,7 +24,7 @@ public class Frame extends JFrame {
     private JButton addTask;
     private JButton clear;
     private final TitleBar titleBar;
-    private final List list;
+    public static  List list;
 
     private JPanel jPanel = new JPanel();
 
@@ -33,7 +36,8 @@ public class Frame extends JFrame {
 
 
 
-    public Frame() {
+    public Frame() throws IOException {
+
 
 
         this.setSize(Constant.FRAME_SIZE_WIDTH, Constant.FRAME_SIZE_HEIGHT);
@@ -51,8 +55,18 @@ public class Frame extends JFrame {
 
         addTask = buttonPanel.getAddTask();
         clear = buttonPanel.getClearDoneTask();
+        boolean k = false;
+        boolean b = TxtFile.isEmpty();
+        for (int i = 0; i < 1; i++) {
+            if (b) addListener(b);else addListener(k);
 
-        addListener();
+
+
+        }
+        addListener(k);
+
+
+
         repaint();
         revalidate();
 
@@ -62,75 +76,169 @@ public class Frame extends JFrame {
 
     }
 
-    private void addListener() {
+    public  void addListener(boolean b) {
         addTask.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
-               String nameOfTask = JOptionPane.showInputDialog(jPanel, "Task");
-                Task task;
-                try {
-                     task = new Task(nameOfTask);
-
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-
-                list.add(task);
-                list.updateNumbers();
-                repaint();
-                revalidate();
 
 
-                task.getDoneButton().addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        super.mouseClicked(e);
-                        String textTemp = (task.getDoneButton().isSelected()) ?  "Undo" :"Done" ;
-                        task.getDoneButton().setText(textTemp);
-                        if (task.getDoneButton().isSelected()) {
-                            try {
-                                task.changeStatusTrue(nameOfTask, true);
-                                repaint();
-                                revalidate();
-                            } catch (IOException ex) {
-                                throw new RuntimeException(ex);
-                            }
-                        }
-                        if (!task.getDoneButton().isSelected()) {
-                            try {
-                                task.changeStatusFalse(nameOfTask, false);
-                                repaint();
-                                revalidate();
-                            } catch (IOException ex) {
-                                throw new RuntimeException(ex);
-                            }
-                        }
+                if(!b) {
+                    String nameOfTask = JOptionPane.showInputDialog(jPanel, "Task");
+                    Task task;
+                    try {
+                        task = new Task(nameOfTask, b);
 
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
                     }
-                });
 
-                repaint();
-                revalidate();
+                    list.add(task);
+                    list.updateNumbers();
+                    repaint();
+                    revalidate();
 
-                task.getShowDescription().addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mousePressed(MouseEvent e) {
-                        super.mousePressed(e);
-                        try {
-                            JOptionPane.showMessageDialog(jTextPane, task.getDescription(nameOfTask), nameOfTask, 1);
-                            revalidate();
+                    task.getDoneButton().addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            super.mouseClicked(e);
+                            String textTemp = (task.getDoneButton().isSelected()) ? "Undo" : "Done";
+                            task.getDoneButton().setText(textTemp);
+                            if (task.getDoneButton().isSelected()) {
+                                try {
+                                    task.changeStatusTrue(nameOfTask, true);
+                                    repaint();
+                                    revalidate();
+                                } catch (IOException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            }
+                            if (!task.getDoneButton().isSelected()) {
+                                try {
+                                    task.changeStatusFalse(nameOfTask, false);
+                                    repaint();
+                                    revalidate();
+                                } catch (IOException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            }
+
+                        }
+                    });
+                    repaint();
+                    revalidate();
+                    task.getShowDescription().addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mousePressed(MouseEvent e) {
+                            super.mousePressed(e);
+                            try {
+                                JOptionPane.showMessageDialog(jTextPane, task.getDescription(nameOfTask), nameOfTask, 1);
+                                revalidate();
+                                repaint();
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        }
+                    });
+                    repaint();
+                    revalidate();
+
+
+
+
+
+
+
+                } else {
+                    File[] collection = Directory.folder.listFiles();
+                    java.util.List<File> fileList = Arrays.asList(collection);
+                    if (!fileList.isEmpty()) {
+
+                        for (File f :
+                                fileList) {
+                            Task task;
+                            String nameOfTask;
+
+                            try {
+                                task = new Task(f.getName(), !b);
+                                 nameOfTask = f.getName();
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+
+                            list.add(task);
+                            list.updateNumbers();
                             repaint();
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
+                            revalidate();
+
+                            task.getDoneButton().addMouseListener(new MouseAdapter() {
+                                @Override
+                                public void mouseClicked(MouseEvent e) {
+                                    super.mouseClicked(e);
+                                    String textTemp = (task.getDoneButton().isSelected()) ? "Undo" : "Done";
+                                    task.getDoneButton().setText(textTemp);
+                                    if (task.getDoneButton().isSelected()) {
+                                        try {
+                                            task.changeStatusTrue(nameOfTask, true);
+                                            repaint();
+                                            revalidate();
+                                        } catch (IOException ex) {
+                                            throw new RuntimeException(ex);
+                                        }
+                                    }
+                                    if (!task.getDoneButton().isSelected()) {
+                                        try {
+                                            task.changeStatusFalse(nameOfTask, false);
+                                            repaint();
+                                            revalidate();
+                                        } catch (IOException ex) {
+                                            throw new RuntimeException(ex);
+                                        }
+                                    }
+
+                                }
+
+
+
+
+
+                            });
+                            repaint();
+                            revalidate();
+                            task.getShowDescription().addMouseListener(new MouseAdapter() {
+                                @Override
+                                public void mousePressed(MouseEvent e) {
+                                    super.mousePressed(e);
+                                    try {
+                                        JOptionPane.showMessageDialog(jTextPane, task.getDescription(nameOfTask), nameOfTask, 1);
+                                        revalidate();
+                                        repaint();
+                                    } catch (IOException ex) {
+                                        throw new RuntimeException(ex);
+                                    }
+                                }
+                            });
+                            repaint();
+                            revalidate();
                         }
                     }
-                });
 
 
 
-            }
-        });
+
+
+
+
+
+
+
+
+
+
+                    }
+                }});
+        repaint();
+        revalidate();
 
 
         clear.addMouseListener(new MouseAdapter() {

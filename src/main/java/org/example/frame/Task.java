@@ -9,27 +9,25 @@ import java.awt.*;
 import java.io.IOException;
 
 
-
 public class Task extends JPanel {
 
-    private  boolean checked;
+    private boolean checked;
 
-    private  JButton showDescription;
-    private JLabel  textOfTask;
-    private  JToggleButton doneButton;
+    private JButton showDescription;
+    private JLabel textOfTask;
+    private JToggleButton doneButton;
     private JPanel panelOfButtonsS_D;
     private JLabel index;
 
 
+    public Task(String nameOfTask, boolean b) throws IOException {
 
+        if (!b) {
+            TxtFile txtFile = new TxtFile();
+            txtFile.createTxtFolder(nameOfTask);
+        }
 
-
-    public Task(String nameOfTask) throws IOException {
-
-        TxtFile txtFile = new TxtFile();
-        txtFile.createTxtFolder(nameOfTask);
-
-        this.setPreferredSize(new Dimension(40,20));
+        this.setPreferredSize(new Dimension(40, 20));
         this.setBackground(Color.RED);
         this.setLayout(new BorderLayout());
 
@@ -54,7 +52,7 @@ public class Task extends JPanel {
 
 
         showDescription = new JButton("show");
-        showDescription.setPreferredSize(new Dimension(40,40));
+        showDescription.setPreferredSize(new Dimension(40, 40));
         showDescription.setBorder(BorderFactory.createEmptyBorder());
 
         panelOfButtonsS_D.add(doneButton, BorderLayout.WEST);
@@ -90,13 +88,21 @@ public class Task extends JPanel {
     public void setChecked(boolean checked) {
         this.checked = checked;
     }
-    public JToggleButton getDoneButton() { return doneButton;}
-    public JButton getShowDescription() {return showDescription;}
-   // public JPanel getPanelOfButtonsS_D() {return getPanelOfButtonsS_D();}
+
+    public JToggleButton getDoneButton() {
+        return doneButton;
+    }
+
+    public JButton getShowDescription() {
+        return showDescription;
+    }
+
+    // public JPanel getPanelOfButtonsS_D() {return getPanelOfButtonsS_D();}
     public void changeIndex(int num) {
         this.index.setText(String.valueOf(num));
         this.revalidate();
     }
+
     public boolean getState() {
         return this.checked;
     }
@@ -107,9 +113,6 @@ public class Task extends JPanel {
         System.out.println(nameOfTask);
         return temp;
     }
-
-
-
 
 
 }

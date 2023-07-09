@@ -67,6 +67,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
+import org.example.Main;
+import org.example.frame.Frame;
 import org.example.frame.Task;
 
 
@@ -77,10 +79,8 @@ public class TxtFile {
 
 
     private static File description;
-    private  File status;
+    private File status;
     private static File status2;
-
-
 
 
     public void createTxtFolder(String nameOfTask) {
@@ -134,9 +134,6 @@ public class TxtFile {
                     + " successfully added!");
 
 
-
-
-
         } catch (FileNotFoundException ex) {
             throw new RuntimeException(ex);
         }
@@ -146,7 +143,7 @@ public class TxtFile {
 
     public static void changeStatus(boolean b, String nameOfTask) throws IOException {
         //status.delete();
-        String boolTemp = String.valueOf(b) ;
+        String boolTemp = String.valueOf(b);
 
         Files.delete(Path.of((Directory.folder.getAbsolutePath() + "\\" + nameOfTask + "\\" + "status" + ".txt")));
         status2 = new File(Directory.folder.getAbsoluteFile() + "\\" + nameOfTask + "\\" + "status" + ".txt");
@@ -203,16 +200,19 @@ public class TxtFile {
 
 
     }
-    public static void readAtStart() throws IOException {
+
+    public static boolean isEmpty() throws IOException {
+        boolean b;
         File[] collection = Directory.folder.listFiles();
         List<File> fileList = Arrays.asList(collection);
-        for (File f:
-             fileList )   {
+        if (!fileList.isEmpty()) {
+            b = true;
 
-            Task task = new Task(f.getName());
+        } else b = false;
+        return b;
 
-        }
     }
+
 
     public static List<String> getListOfName(Path path) {
         try (Stream<Path> walk = Files.walk(path)) {
