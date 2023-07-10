@@ -79,6 +79,7 @@ public class TxtFile {
     private static File description;
     private  File status;
     private static File status2;
+    static Task task;
 
 
 
@@ -203,16 +204,7 @@ public class TxtFile {
 
 
     }
-    public static void readAtStart() throws IOException {
-        File[] collection = Directory.folder.listFiles();
-        List<File> fileList = Arrays.asList(collection);
-        for (File f:
-             fileList )   {
 
-            Task task = new Task(f.getName());
-
-        }
-    }
 
     public static List<String> getListOfName(Path path) {
         try (Stream<Path> walk = Files.walk(path)) {

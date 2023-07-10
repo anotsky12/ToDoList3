@@ -65,6 +65,43 @@ public class Task extends JPanel {
         this.add(panelOfButtonsS_D, BorderLayout.EAST);
 
     }
+    public Task(String nameOfTask, int i) throws IOException{
+        this.setPreferredSize(new Dimension(40,20));
+        this.setBackground(Color.RED);
+        this.setLayout(new BorderLayout());
+
+        index = new JLabel("");
+        index.setPreferredSize(new Dimension(20, 20));
+        index.setHorizontalAlignment(JLabel.CENTER);
+        this.add(index, BorderLayout.WEST);
+
+        textOfTask = new JLabel(nameOfTask);
+        textOfTask.setBorder(BorderFactory.createEmptyBorder());
+        textOfTask.setBackground(Color.RED);
+        this.add(textOfTask, BorderLayout.CENTER);
+
+        panelOfButtonsS_D = new JPanel();
+        panelOfButtonsS_D.setPreferredSize(new Dimension(120, 40));
+        panelOfButtonsS_D.setBorder(BorderFactory.createEmptyBorder());
+
+
+        doneButton = new JToggleButton("Done", false);
+        doneButton.setPreferredSize(new Dimension(40, 40));
+        doneButton.setBorder(BorderFactory.createEmptyBorder());
+
+
+        showDescription = new JButton("show");
+        showDescription.setPreferredSize(new Dimension(40,40));
+        showDescription.setBorder(BorderFactory.createEmptyBorder());
+
+        panelOfButtonsS_D.add(doneButton, BorderLayout.WEST);
+
+        panelOfButtonsS_D.add(showDescription, BorderLayout.EAST);
+
+
+        this.add(panelOfButtonsS_D, BorderLayout.EAST);
+
+    }
 
     public void changeStatusTrue(String nameOfTask, boolean b) throws IOException {
         this.setBackground(Color.GREEN);

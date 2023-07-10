@@ -1,6 +1,7 @@
 package org.example.frame;
 
 
+import org.example.data.Directory;
 import org.example.data.TxtFile;
 
 
@@ -11,9 +12,11 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import java.io.File;
 import java.io.IOException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class Frame extends JFrame {
@@ -26,11 +29,7 @@ public class Frame extends JFrame {
     private JPanel jPanel = new JPanel();
 
 
-
     private JTextPane jTextPane = new JTextPane();
-
-
-
 
 
     public Frame() {
@@ -52,6 +51,7 @@ public class Frame extends JFrame {
         addTask = buttonPanel.getAddTask();
         clear = buttonPanel.getClearDoneTask();
 
+
         addListener();
         repaint();
         revalidate();
@@ -67,39 +67,78 @@ public class Frame extends JFrame {
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
-               String nameOfTask = JOptionPane.showInputDialog(jPanel, "Task");
+                ThreadB threadB = new ThreadB(){
+                    threadB.start();
+                    threadB.wait();
+                };
+                System.out.println(threadB.total);
+
+
+                int i = 1;
                 Task task;
-                try {
-                     task = new Task(nameOfTask);
+                if (i == 1) {
+                    try {
+                        File[] collection = Directory.folder.listFiles();
+                        java.util.List<File> fileList = Arrays.asList(collection);
+                        System.out.println(fileList);
+                        for (int j = 0; j < collection.length; j++) {
+                            for (File f : fileList) {
 
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+
+                                task = new Task(f.getName(), 1);
+                                System.out.println(f.getName());
+
+                                list.add(task);
+                                list.updateNumbers();
+                                repaint();
+                                revalidate();
+                            }
+                            i++;
+
+                        }
+                        System.out.println("read");
+                    } catch (IOException ez) {
+                        String nameOfTask = JOptionPane.showInputDialog(jPanel, "Task");
+                        try {
+                            task = new Task(nameOfTask);
+                            list.add(task);
+                            list.updateNumbers();
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+
+                    }
                 }
+                i++;
 
-                list.add(task);
-                list.updateNumbers();
+
+
+
+
+
                 repaint();
                 revalidate();
 
 
+                Task finalTask = task;
                 task.getDoneButton().addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         super.mouseClicked(e);
-                        String textTemp = (task.getDoneButton().isSelected()) ?  "Undo" :"Done" ;
-                        task.getDoneButton().setText(textTemp);
-                        if (task.getDoneButton().isSelected()) {
+                        String textTemp = (finalTask.getDoneButton().isSelected()) ? "Undo" : "Done";
+                        finalTask.getDoneButton().setText(textTemp);
+                        if (finalTask.getDoneButton().isSelected()) {
                             try {
-                                task.changeStatusTrue(nameOfTask, true);
+                                finalTask.changeStatusTrue(nameOfTask, true);
                                 repaint();
                                 revalidate();
                             } catch (IOException ex) {
                                 throw new RuntimeException(ex);
                             }
                         }
-                        if (!task.getDoneButton().isSelected()) {
+                        if (!finalTask.getDoneButton().isSelected()) {
                             try {
-                                task.changeStatusFalse(nameOfTask, false);
+                                finalTask.changeStatusFalse(nameOfTask, false);
                                 repaint();
                                 revalidate();
                             } catch (IOException ex) {
@@ -113,12 +152,13 @@ public class Frame extends JFrame {
                 repaint();
                 revalidate();
 
+                Task finalTask1 = task;
                 task.getShowDescription().addMouseListener(new MouseAdapter() {
                     @Override
                     public void mousePressed(MouseEvent e) {
                         super.mousePressed(e);
                         try {
-                            JOptionPane.showMessageDialog(jTextPane, task.getDescription(nameOfTask), nameOfTask, 1);
+                            JOptionPane.showMessageDialog(jTextPane, finalTask1.getDescription(nameOfTask), nameOfTask, 1);
                             revalidate();
                             repaint();
                         } catch (IOException ex) {
@@ -126,7 +166,6 @@ public class Frame extends JFrame {
                         }
                     }
                 });
-
 
 
             }
@@ -144,7 +183,6 @@ public class Frame extends JFrame {
                 TxtFile.deleteTrue();
                 repaint();
                 revalidate();
-
 
 
 //                int k = 0;
